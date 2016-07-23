@@ -1,5 +1,7 @@
+require 'json'
 require 'sinatra'
 require 'sinatra/reloader' if development?
+require 'digest'
 
 # Commands to run
 #
@@ -13,4 +15,16 @@ require 'sinatra/reloader' if development?
 
 get '/' do
   "Hello World! Welcome to Ruby!"
+end
+
+post '/submit' do
+  data = JSON.parse request.body.read
+  hash_name = Digest::SHA256.base64digest data.to_s
+  
+  puts '----------'
+  puts hash_name
+  puts data.inspect
+  puts '----------'
+  
+  'OK'
 end
