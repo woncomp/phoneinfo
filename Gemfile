@@ -8,3 +8,5 @@ gem 'pg'
 
 gem 'dm-postgres-adapter'
 gem 'data_mapper'
+
+gem 'axlsx'

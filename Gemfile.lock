@@ -2,6 +2,10 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
+    axlsx (2.0.1)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (~> 1.0.0)
     backports (3.6.8)
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
@@ -57,15 +61,22 @@ GEM
       data_objects (= 0.10.17)
     eventmachine (1.2.0.1)
     fastercsv (1.5.5)
+    htmlentities (4.3.4)
     json (1.8.3)
     json_pure (1.8.3)
+    mini_portile2 (2.1.0)
     multi_json (1.12.1)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     pg (0.18.4)
+    pkg-config (1.1.7)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+    rubyzip (1.0.0)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -89,6 +100,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  axlsx
   data_mapper
   dm-postgres-adapter
   pg

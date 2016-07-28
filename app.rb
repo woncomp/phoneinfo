@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'digest'
 require 'data_mapper'
+require 'axlsx'
 
 configure :development do
   DataMapper.setup(:default, 'postgres://ubuntu:your_password@localhost/phoneinfo')
@@ -57,6 +58,86 @@ class PhoneInfo
 	property :dpi, Float
 	
 	property :supportsRenderTextureFormat, Object
+	
+	def self.table_titles
+	    [
+    	'deviceModel',
+    	'deviceType',
+    	'deviceUniqueIdentifier',
+    	'graphicsDeviceID',
+    	'graphicsDeviceName',
+    	'graphicsDeviceVendor',
+    	'graphicsDeviceVendorID',
+    	'graphicsDeviceVersion',
+    	'graphicsMemorySize',
+    	'graphicsMultiThreaded',
+    	'graphicsShaderLevel',
+    	'maxTextureSize',
+    	'npotSupport',
+    	'operatingSystem',
+    	'processorCount',
+    	'processorType',
+    	'supportedRenderTargetCount',
+    	'supports3DTextures',
+    	'supportsAccelerometer',
+    	'supportsComputeShaders',
+    	'supportsGyroscope',
+    	'supportsImageEffects',
+    	'supportsInstancing',
+    	'supportsLocationService',
+    	'supportsRawShadowDepthSampling',
+    	'supportsRenderTextures',
+    	'supportsRenderToCubemap',
+    	'supportsShadows',
+    	'supportsSparseTextures',
+    	'supportsStencil',
+    	'supportsVibration',
+    	'systemMemorySize',
+    
+    	'screenWidth',
+    	'screenHeight',
+    	'dpi']
+	end
+	
+	def table_values
+      [
+    	@deviceModel,
+    	@deviceType,
+    	@deviceUniqueIdentifier,
+    	@graphicsDeviceID,
+    	@graphicsDeviceName,
+    	@graphicsDeviceVendor,
+    	@graphicsDeviceVendorID,
+    	@graphicsDeviceVersion,
+    	@graphicsMemorySize,
+    	@graphicsMultiThreaded,
+    	@graphicsShaderLevel,
+    	@maxTextureSize,
+    	@npotSupport,
+    	@operatingSystem,
+    	@processorCount,
+    	@processorType,
+    	@supportedRenderTargetCount,
+    	@supports3DTextures,
+    	@supportsAccelerometer,
+    	@supportsComputeShaders,
+    	@supportsGyroscope,
+    	@supportsImageEffects,
+    	@supportsInstancing,
+    	@supportsLocationService,
+    	@supportsRawShadowDepthSampling,
+    	@supportsRenderTextures,
+    	@supportsRenderToCubemap,
+    	@supportsShadows,
+    	@supportsSparseTextures,
+    	@supportsStencil,
+    	@supportsVibration,
+    	@systemMemorySize,
+    
+    	@screenWidth,
+    	@screenHeight,
+    	@dpi]
+	end
 end
 
 DataMapper.finalize
@@ -133,4 +214,24 @@ post '/submit' do
   end
   
   'OK'
-end	
+end
+
+get '/phoneinfo.xlsx' do
+  p = Axlsx::Package.new
+  wb = p.workbook
+  wb.add_worksheet(:name => "Sheet1") do |sheet|
+    sheet.add_row PhoneInfo.table_titles
+    PhoneInfo.all(:order => [ :deviceModel.desc ]).each do |pi|
+      sheet.add_row pi.table_values
+    end
+  end
+  s = p.to_stream()
+  
+  response['Content-Type'] = 'application/octet-stream'
+  response['Content-Disposition'] = 'attachment'
+  stream do |out|
+    PhoneInfo.all.each do |pi|
+      out << s.read
+    end
+  end
+end
